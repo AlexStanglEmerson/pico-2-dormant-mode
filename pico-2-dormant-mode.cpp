@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/sleep.h"
+#include "pico/low_power.h"
 #include "hardware/clocks.h"
 #include "hardware/powman.h"
 

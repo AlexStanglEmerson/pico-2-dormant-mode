@@ -51,6 +51,7 @@ pico_enable_stdio_usb(pico-2-dormant-mode 0)
 # Add the standard library to the build
 target_link_libraries(pico-2-dormant-mode
         pico_stdlib
+        pico_low_power
         hardware_sleep
         hardware_powman)
 
