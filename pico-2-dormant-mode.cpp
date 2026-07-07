@@ -20,8 +20,7 @@ static uint32_t ledFlashRateMillis = 100;
 
 int main()
 {
-    struct timespec ts = { .tv_sec = GOOD_ENOUGH_TIMESTAMP, .tv_nsec = 0 };
-    aon_timer_start(&ts);
+    low_power_start_aon_timer_at_time_ms(GOOD_ENOUGH_TIMESTAMP * 1000);
 
     // Initialize the LED GPIO as an output
     gpio_init(PICO_DEFAULT_LED_PIN);
