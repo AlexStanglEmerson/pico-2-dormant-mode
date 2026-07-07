@@ -1,27 +1,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/low_power.h"
-#include "hardware/clocks.h"
-#include "hardware/powman.h"
-
-#define YEAR (((__DATE__[7] - '0') * 1000) + ((__DATE__[8] - '0') * 100) + ((__DATE__[9] - '0') * 10) + (__DATE__[10] - '0'))
-#define GOOD_ENOUGH_TIMESTAMP ((uint64_t)YEAR * 365 * 24 * 60 * 60) // Roughly the number of seconds in a year
+#include "low_power_edit.h"
 
 #define GPIO_WAKEUP_PIN 7
-#define clocks_hw ((clocks_hw_t *)CLOCKS_BASE)
-
-enum wakeup_source_t {
-    WAKEUP_SOURCE_GPIO,
-    WAKEUP_SOURCE_TIMER
-};
 
 static uint32_t ledFlashRateMillis = 100;
 
-
 int main()
 {
-    low_power_start_aon_timer_at_time_ms(GOOD_ENOUGH_TIMESTAMP * 1000);
-
     // Initialize the LED GPIO as an output
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
@@ -41,10 +27,16 @@ int main()
             sleep_ms(ledFlashRateMillis);
         }
 
-        // Put the Pico to sleep until the GPIO wakeup pin goes high
-        low_power_dormant_until_gpio_pin_state(GPIO_WAKEUP_PIN, true, true, DORMANT_CLOCK_SOURCE_LPOSC, nullptr);
+        // Put the Pico to sleep until the GPIO wakeup pin goes high or the AON timer wakes up the Pico
+        auto wakeup_source = low_power_dormant_until_gpio_pin_state_or_for_ms(GPIO_WAKEUP_PIN, true, true, 10000, DORMANT_CLOCK_SOURCE_LPOSC, nullptr);
 
-        // // Put the Pico to sleep until the AON timer wakes up the Pico
-        // low_power_dormant_for_ms(5000, DORMANT_CLOCK_SOURCE_LPOSC, nullptr);
+        // A GPIO wakeup should flash the LED fast, a timer wakeup should flash the LED slow, and if the Pico didn't go dormant, flash the LED fast enough that it looks almost constant
+        if (wakeup_source == WAKEUP_SOURCE_GPIO) {
+            ledFlashRateMillis = 100;
+        } else if (wakeup_source == WAKEUP_SOURCE_TIMER) {
+            ledFlashRateMillis = 500;
+        } else {
+            ledFlashRateMillis = 10;
+        }
     }
 }

@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico-2-dormant-mode pico-2-dormant-mode.cpp )
+add_executable(pico-2-dormant-mode )
 
 pico_set_program_name(pico-2-dormant-mode "pico-2-dormant-mode")
 pico_set_program_version(pico-2-dormant-mode "0.1")
@@ -43,6 +43,11 @@ pico_set_program_version(pico-2-dormant-mode "0.1")
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(pico-2-dormant-mode 0)
 pico_enable_stdio_usb(pico-2-dormant-mode 0)
+
+target_sources(pico-2-dormant-mode PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/pico-2-dormant-mode.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/low_power_edit.cpp
+)
 
 # Add the standard library to the build
 target_link_libraries(pico-2-dormant-mode
