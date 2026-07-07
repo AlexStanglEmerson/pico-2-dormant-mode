@@ -8,6 +8,10 @@
 #include "hardware/sync.h"
 #include "hardware/xosc.h"
 
+#if LIB_TINYUSB_DEVICE || LIB_TINYUSB_HOST
+#include <tusb.h>
+#endif
+
 /**
  * Significant parts of the code were taken from the official Pico SDK which requires the following license notice:
  *
