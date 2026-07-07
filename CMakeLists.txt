@@ -52,8 +52,7 @@ target_sources(pico-2-dormant-mode PUBLIC
 # Add the standard library to the build
 target_link_libraries(pico-2-dormant-mode
         pico_stdlib
-        pico_low_power
-        hardware_powman)
+        pico_low_power)
 
 # Add the standard include files to the build
 target_include_directories(pico-2-dormant-mode PRIVATE
