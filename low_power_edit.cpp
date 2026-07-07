@@ -38,6 +38,14 @@
 static uint32_t interrupt_flags;
 // volatile bool event_happened;
 
+#if LIB_TINYUSB_DEVICE
+static bool tud_was_inited = false;
+#endif
+
+#if LIB_TINYUSB_HOST
+static bool tuh_was_inited = false;
+#endif
+
 static void replace_null_enable_values(const clock_dest_bitset_t *keep_enabled,
                                        clock_dest_bitset_t *local_keep_enabled) {
     if (keep_enabled) {
